@@ -15,7 +15,7 @@ import java.util.List;
 public class MetEntity {
     @Id
     private String nom;
-    private float prix;
+    private double prix;
     @ManyToMany(mappedBy = "Met")
     private List<TicketEntity> tickets;
 

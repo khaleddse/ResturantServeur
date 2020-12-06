@@ -18,8 +18,8 @@ public class ClientEntity {
 private String nom;
 private String prenom;
 private LocalDate dateDeNaissance;
-@Id
 private String courriel;
+@Id
 private String telephone;
 @OneToMany(mappedBy = "Client")
 private List<TicketEntity> tickets;

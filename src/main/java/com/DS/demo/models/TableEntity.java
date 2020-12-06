@@ -16,7 +16,7 @@ public class TableEntity {
     private Integer numero;
     private Integer nbCouvert;
     private String type;
-    private float supplement;
+    private double supplement;
     @OneToMany(mappedBy = "table")
     private List<TicketEntity> ticktes;
 }
