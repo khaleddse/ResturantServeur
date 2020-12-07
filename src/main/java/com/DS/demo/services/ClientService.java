@@ -9,13 +9,13 @@ public interface ClientService {
 
         List<ClientEntity> getAllEntities();
 
-       ClientEntity getEntityById(String id);
+       ClientEntity getClientById(String id);
 
         ClientEntity createClient(ClientEntity entity);
 
-        ClientEntity modifyPerson(long id, ClientEntity newEntity);
+        ClientEntity modifyClient(long id, ClientEntity newEntity);
 
-        ClientEntity deletePersonById(long id);
+        ClientEntity deleteClientById(long id);
 
         public ClientEntity getByName(String name);
 }

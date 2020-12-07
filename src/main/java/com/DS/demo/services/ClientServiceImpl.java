@@ -1,5 +1,6 @@
 package com.DS.demo.services;
 
+import ch.qos.logback.core.net.server.Client;
 import com.DS.demo.models.ClientEntity;
 import com.DS.demo.repositories.ClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientEntity getEntityById(String id) {
+    public ClientEntity getClientById(String id) {
         Optional<ClientEntity> clientOp= repoclient.findById(id);
         ClientEntity  client;
         if(clientOp.isPresent()){
@@ -43,13 +44,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientEntity modifyPerson(long id, ClientEntity newEntity) {
+    public ClientEntity modifyClient(long id, ClientEntity newEntity) {
         return null;
     }
 
     @Override
-    public ClientEntity deletePersonById(long id) {
-        return null;
+    public ClientEntity deleteClientById(String id) {
+        ClientEntity client=this.getClientById();
+        repoclient.deleteById(id);
+        return client;
     }
 
     @Override
