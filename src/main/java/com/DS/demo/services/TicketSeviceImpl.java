@@ -24,7 +24,7 @@ public class TicketSeviceImpl implements TicketService{
     }
 
     @Override
-    public TicketEntity getTicketById(long id) {
+    public TicketEntity RechercheParId(long id) {
         Optional<TicketEntity> ticketOpt=repoticket.findById(id);
         TicketEntity ticket;
         if(ticketOpt.isPresent())
@@ -36,18 +36,31 @@ public class TicketSeviceImpl implements TicketService{
 
     @Override
     public TicketEntity createticket(TicketEntity entity) {
-return null;
+    return repoticket.save(entity);
     }
 
     @Override
     public TicketEntity modifyTicket(long id, TicketEntity modification) {
-        return null;
+    TicketEntity oldticket=this.RechercheParId(id);
+    if(modification.getNumero()!=null){
+        oldticket.setNumero(modification.getNumero());
+    }
+    if(modification.getAddition()!=0){
+        oldticket.setAddition(modification.getAddition());
+    }
+    if(modification.getDate()!=null){
+        oldticket.setDate(modification.getDate());
+    }
+    if(modification.getNbCouvert()!=null){
+        oldticket.setNbCouvert(modification.getNbCouvert());
+    }
+    return oldticket;
     }
 
     @Override
-    public TicketEntity deleteTicketById(long id) {
-        TicketEntity ticket=this.getTicketById(id);
+    public String deleteTicketById(long id) {
+        TicketEntity ticket=this.RechercheParId(id);
         repoticket.deleteById(id);
-         return ticket;
+         return "ticket Supprimer";
     }
 }

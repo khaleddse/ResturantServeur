@@ -19,7 +19,6 @@ private String nom;
 private String prenom;
 private LocalDate dateDeNaissance;
 private String courriel;
-
 private String telephone;
 @OneToMany(mappedBy = "client")
 private List<TicketEntity> tickets;

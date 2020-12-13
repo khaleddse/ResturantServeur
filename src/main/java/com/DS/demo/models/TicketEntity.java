@@ -17,7 +17,7 @@ public class TicketEntity {
 
     @Column(unique = true,nullable = false)
     private Integer numero;
-    private LocalDateTime date;
+    private LocalDate date;
     private Integer nbCouvert;
     private float addition;
     @ManyToOne

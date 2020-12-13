@@ -2,6 +2,7 @@ package com.DS.demo.services;
 
 import ch.qos.logback.core.net.server.Client;
 import com.DS.demo.models.ClientEntity;
+import com.DS.demo.models.MetEntity;
 import com.DS.demo.repositories.ClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,24 +40,42 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientEntity createClient(ClientEntity clientRequest) {
-
+        clientRequest.setNom(clientRequest.getNom().toUpperCase());
        return repoclient.save(clientRequest);
     }
 
     @Override
     public ClientEntity modifyClient(long id, ClientEntity newEntity) {
-        return null;
+        ClientEntity oldclient= this.getClientById(id);
+        if(newEntity.getNom()!=null){
+            oldclient.setNom(newEntity.getNom().toUpperCase());
+        }
+        if(newEntity.getPrenom()!=null){
+            oldclient.setPrenom(newEntity.getPrenom());
+        }
+        if(newEntity.getCourriel()!=null){
+            oldclient.setCourriel(newEntity.getCourriel());
+        }
+        if(newEntity.getDateDeNaissance()!=null){
+            oldclient.setDateDeNaissance(newEntity.getDateDeNaissance());
+        }
+        if(newEntity.getTelephone()!=null){
+            oldclient.setTelephone(newEntity.getTelephone());
+        }
+        return repoclient.save(oldclient);
     }
 
     @Override
-    public ClientEntity deleteClientById(long id) {
+    public String deleteClientById(long id) {
         ClientEntity client=this.getClientById(id);
         repoclient.deleteById(id);
-        return client;
+        return "client supprimer";
     }
 
     @Override
-    public ClientEntity getByName(String name) {
-        return null;
+    public ClientEntity RechercheParNom(String nom) {
+        String Nom=nom.toUpperCase();
+        return repoclient.findByNom(Nom).orElseThrow(()-> new NoSuchElementException("Aucun Client avec cette nom"));
+
     }
 }

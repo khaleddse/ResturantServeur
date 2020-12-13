@@ -15,7 +15,7 @@ public interface ClientService {
 
         ClientEntity modifyClient(long id, ClientEntity newEntity);
 
-        ClientEntity deleteClientById(long id);
+        String deleteClientById(long id);
 
-        public ClientEntity getByName(String name);
+        public ClientEntity RechercheParNom(String nom);
 }

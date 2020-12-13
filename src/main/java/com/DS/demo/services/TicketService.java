@@ -8,13 +8,13 @@ import java.util.List;
 public interface TicketService {
     List<TicketEntity> getAllTicket();
 
-    TicketEntity getTicketById(long id);
+    TicketEntity RechercheParId(long id);
 
     TicketEntity createticket(TicketEntity entity);
 
    TicketEntity modifyTicket(long id, TicketEntity modification);
 
-    TicketEntity deleteTicketById(long id);
+    String deleteTicketById(long id);
 
 
 }
