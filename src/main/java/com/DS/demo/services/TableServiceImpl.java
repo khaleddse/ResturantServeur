@@ -35,18 +35,38 @@ public class TableServiceImpl implements TableService{
 
     @Override
     public TableEntity ajoutetable(TableEntity entity) {
-        return null;
+        return repotable.save(entity);
     }
 
     @Override
     public TableEntity modifyTable(long id, TableEntity modification) {
-        return null;
+        TableEntity oldtable= this.RechercheParId(id);
+        if(modification.getNumero()!=0){
+            oldtable.setNumero(modification.getNumero());
+        }
+        if(modification.getNbCouvert()!=0){
+            oldtable.setNbCouvert(modification.getNbCouvert());
+        }
+        if(modification.getSupplement() !=0){
+            oldtable.setSupplement(modification.getSupplement());
+        }
+        if(modification.getType() !=null){
+            oldtable.setType(modification.getType());
+        }
+        return repotable.save(oldtable);
+
     }
 
     @Override
-    public TableEntity deleteTableById(long id) {
+    public String deleteTableById(long id) {
       TableEntity table=this.RechercheParId(id);
       repotable.deleteById(id);
-      return table;
+      return "table supprimer";
+    }
+
+    @Override
+    public TableEntity RechercheTableParNum(int num) {
+        return repotable.findByNumero(num)
+                .orElseThrow(()-> new NoSuchElementException("table avec cette numerp n'existe pas"));
     }
 }

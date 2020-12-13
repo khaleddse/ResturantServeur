@@ -16,6 +16,7 @@ public class MetEntity {
     @Column(nullable = false,unique = true)
     private String nom;
     private double prix;
+    private String type;
     @ManyToMany(mappedBy = "mets")
     private List<TicketEntity> tickets;
 

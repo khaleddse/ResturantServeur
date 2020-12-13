@@ -1,7 +1,7 @@
 package com.DS.demo.services;
 
 import com.DS.demo.models.TableEntity;
-import com.DS.demo.models.TicketEntity;
+
 
 import java.util.List;
 
@@ -14,5 +14,7 @@ public interface TableService {
 
     TableEntity modifyTable(long id, TableEntity modification);
 
-    TableEntity deleteTableById(long id);
+   String deleteTableById(long id);
+
+   TableEntity RechercheTableParNum(int num);
 }
