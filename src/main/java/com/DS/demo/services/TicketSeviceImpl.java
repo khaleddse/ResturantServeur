@@ -1,6 +1,6 @@
 package com.DS.demo.services;
 
-import com.DS.demo.models.ClientEntity;
+
 import com.DS.demo.models.TicketEntity;
 import com.DS.demo.repositories.TicketRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class TicketSeviceImpl implements TicketService{
     }
 
     @Override
-    public TicketEntity getTicketById(Integer id) {
+    public TicketEntity getTicketById(long id) {
         Optional<TicketEntity> ticketOpt=repoticket.findById(id);
         TicketEntity ticket;
         if(ticketOpt.isPresent())
@@ -40,12 +40,12 @@ public class TicketSeviceImpl implements TicketService{
     }
 
     @Override
-    public TicketEntity modifyTicket(Integer id, TicketEntity modification) {
+    public TicketEntity modifyTicket(long id, TicketEntity modification) {
         return null;
     }
 
     @Override
-    public TicketEntity deleteTicketById(Integer id) {
+    public TicketEntity deleteTicketById(long id) {
         TicketEntity ticket=this.getTicketById(id);
         repoticket.deleteById(id);
          return ticket;

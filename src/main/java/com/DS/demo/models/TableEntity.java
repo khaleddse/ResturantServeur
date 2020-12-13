@@ -2,10 +2,7 @@ package com.DS.demo.models;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -13,6 +10,9 @@ import java.util.List;
 @Table(name = "table")
 public class TableEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(nullable = false,unique = true)
     private Integer numero;
     private Integer nbCouvert;
     private String type;

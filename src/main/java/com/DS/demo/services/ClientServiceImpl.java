@@ -26,7 +26,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientEntity getClientById(String id) {
+    public ClientEntity getClientById(long id) {
         Optional<ClientEntity> clientOp= repoclient.findById(id);
         ClientEntity  client;
         if(clientOp.isPresent()){
@@ -49,8 +49,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientEntity deleteClientById(String id) {
-        ClientEntity client=this.getClientById();
+    public ClientEntity deleteClientById(long id) {
+        ClientEntity client=this.getClientById(id);
         repoclient.deleteById(id);
         return client;
     }

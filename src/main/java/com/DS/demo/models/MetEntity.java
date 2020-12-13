@@ -3,10 +3,7 @@ package com.DS.demo.models;
 import lombok.Data;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -14,9 +11,12 @@ import java.util.List;
 @Data
 public class MetEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(nullable = false,unique = true)
     private String nom;
     private double prix;
-    @ManyToMany(mappedBy = "Met")
+    @ManyToMany(mappedBy = "mets")
     private List<TicketEntity> tickets;
 
 }

@@ -9,7 +9,7 @@ public interface ClientService {
 
         List<ClientEntity> getAllEntities();
 
-       ClientEntity getClientById(String id);
+       ClientEntity getClientById(long id);
 
         ClientEntity createClient(ClientEntity entity);
 

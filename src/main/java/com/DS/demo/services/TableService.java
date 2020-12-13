@@ -8,11 +8,11 @@ import java.util.List;
 public interface TableService {
     List<TableEntity> getAllTables();
 
-    TableEntity RechercheParId(Integer id);
+    TableEntity RechercheParId(long id);
 
     TableEntity ajoutetable(TableEntity entity);
 
-    TableEntity modifyTable(Integer id, TableEntity modification);
+    TableEntity modifyTable(long id, TableEntity modification);
 
-    TableEntity deleteTableById(Integer id);
+    TableEntity deleteTableById(long id);
 }

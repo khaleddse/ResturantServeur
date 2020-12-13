@@ -23,7 +23,7 @@ public class TableServiceImpl implements TableService{
     }
 
     @Override
-    public TableEntity RechercheParId(Integer id) {
+    public TableEntity RechercheParId(long id) {
         Optional<TableEntity> tableOpt = repotable.findById(id);
         TableEntity table;
         if (tableOpt.isPresent())
@@ -39,13 +39,13 @@ public class TableServiceImpl implements TableService{
     }
 
     @Override
-    public TableEntity modifyTable(Integer id, TableEntity modification) {
+    public TableEntity modifyTable(long id, TableEntity modification) {
         return null;
     }
 
     @Override
-    public TableEntity deleteTableById(Integer id) {
-      TableEntity table=this.getAllTables();
+    public TableEntity deleteTableById(long id) {
+      TableEntity table=this.RechercheParId(id);
       repotable.deleteById(id);
       return table;
     }
