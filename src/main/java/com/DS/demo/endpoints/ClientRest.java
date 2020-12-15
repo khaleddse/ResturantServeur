@@ -1,5 +1,7 @@
 package com.DS.demo.endpoints;
 
+import com.DS.demo.DTO.ClientRequest;
+import com.DS.demo.DTO.ClientRespence;
 import com.DS.demo.models.ClientEntity;
 import com.DS.demo.services.ClientService;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +23,15 @@ public class ClientRest {
     }
 
 @GetMapping("/{id}")
-    ClientEntity getClientById(@PathVariable("id") long id){
+    ClientRespence getClientById(@PathVariable("id") long id){
         return service.getClientById(id);
 }
 @PostMapping("/add")
-    ClientEntity createClient(@RequestBody ClientEntity entity){
+ClientRespence createClient(@RequestBody ClientRequest entity){
         return service.createClient(entity);
 }
 @PostMapping("/update/{id}")
-    ClientEntity modifyClient(@PathVariable("id") long id, @RequestBody ClientEntity newEntity){
+    ClientRespence modifyClient(@PathVariable("id") long id, @RequestBody ClientRequest  newEntity){
         return service.modifyClient(id,newEntity);
 }
 @DeleteMapping("/delete/{id}")
@@ -37,7 +39,7 @@ public class ClientRest {
         return service.deleteClientById(id);
 }
 @GetMapping("/recherche/{nom}")
-     ClientEntity RechercheParNom(@PathVariable("nom") String nom){
+    ClientRespence  RechercheParNom(@PathVariable("nom") String nom){
         return service.RechercheParNom(nom);
 }
 

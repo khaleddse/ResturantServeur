@@ -1,9 +1,12 @@
 package com.DS.demo.services;
 
 import ch.qos.logback.core.net.server.Client;
+import com.DS.demo.DTO.ClientRequest;
+import com.DS.demo.DTO.ClientRespence;
 import com.DS.demo.models.ClientEntity;
 import com.DS.demo.models.MetEntity;
 import com.DS.demo.repositories.ClientRepo;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +14,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+
 @Service
 public class ClientServiceImpl implements ClientService {
     private ClientRepo repoclient;
+    private ModelMapper mapper = new ModelMapper();
 
     @Autowired
     public ClientServiceImpl(ClientRepo repoclient) {
@@ -27,7 +32,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientEntity getClientById(long id) {
+    public ClientRespence getClientById(long id) {
         Optional<ClientEntity> clientOp= repoclient.findById(id);
         ClientEntity  client;
         if(clientOp.isPresent()){
@@ -35,18 +40,26 @@ public class ClientServiceImpl implements ClientService {
         }else {
             throw new NoSuchElementException("Client avec cette id n'existe pas");
         }
-        return client;
+        return mapper.map(client, ClientRespence.class);
+
     }
 
     @Override
-    public ClientEntity createClient(ClientEntity clientRequest) {
+    public ClientRespence createClient(ClientRequest clientRequestDto) {
+        ClientEntity clientRequest = mapper.map(clientRequestDto, ClientEntity.class);
         clientRequest.setNom(clientRequest.getNom().toUpperCase());
-       return repoclient.save(clientRequest);
+        ClientEntity client =repoclient.save(clientRequest);
+        return mapper.map(client, ClientRespence.class);
+
     }
 
     @Override
-    public ClientEntity modifyClient(long id, ClientEntity newEntity) {
-        ClientEntity oldclient= this.getClientById(id);
+    public ClientRespence modifyClient(long id, ClientRequest  newEntityreq) {//
+        ClientEntity newEntity = mapper.map(newEntityreq, ClientEntity.class);
+
+        ClientRespence oldclientres= this.getClientById(id);
+        ClientEntity oldclient=mapper.map(oldclientres,ClientEntity.class);
+
         if(newEntity.getNom()!=null){
             oldclient.setNom(newEntity.getNom().toUpperCase());
         }
@@ -62,20 +75,28 @@ public class ClientServiceImpl implements ClientService {
         if(newEntity.getTelephone()!=null){
             oldclient.setTelephone(newEntity.getTelephone());
         }
-        return repoclient.save(oldclient);
+        ClientEntity clientDb=repoclient.save(oldclient);
+        return mapper.map(clientDb,ClientRespence.class);
     }
 
     @Override
     public String deleteClientById(long id) {
-        ClientEntity client=this.getClientById(id);
+        ClientRespence client=this.getClientById(id);
         repoclient.deleteById(id);
         return "client supprimer";
     }
 
     @Override
-    public ClientEntity RechercheParNom(String nom) {
+    public ClientRespence RechercheParNom(String nom) {
         String Nom=nom.toUpperCase();
-        return repoclient.findByNom(Nom).orElseThrow(()-> new NoSuchElementException("Aucun Client avec cette nom"));
+         Optional<ClientEntity> opt= repoclient.findByNom(Nom);
+         ClientEntity client;
+         if (opt.isPresent())
+             client= opt.get();
+         else
+             throw new NoSuchElementException("Aucun Client avec cette nom");
+
+        return mapper.map(client,ClientRespence.class);
 
     }
 }

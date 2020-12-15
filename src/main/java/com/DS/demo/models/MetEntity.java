@@ -9,6 +9,12 @@ import java.util.List;
 @Entity
 @Table(name = "Met")
 @Data
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+        discriminatorType = DiscriminatorType.STRING,
+        name = "Met_type_id",
+        columnDefinition = "TEXT"
+)
 public class MetEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +22,6 @@ public class MetEntity {
     @Column(nullable = false,unique = true)
     private String nom;
     private double prix;
-    private String type;
     @ManyToMany(mappedBy = "mets")
     private List<TicketEntity> tickets;
 

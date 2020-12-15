@@ -1,7 +1,11 @@
 package com.DS.demo.services;
 
+import com.DS.demo.DTO.TableRequest;
+import com.DS.demo.DTO.TableResponse;
+import com.DS.demo.models.ClientEntity;
 import com.DS.demo.models.TableEntity;
 import com.DS.demo.repositories.TableRepo;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,7 @@ import java.util.Optional;
 public class TableServiceImpl implements TableService{
 
     TableRepo repotable;
+    private ModelMapper mapper = new ModelMapper();
     @Autowired
     public TableServiceImpl(TableRepo repotable) {
         this.repotable = repotable;
@@ -23,24 +28,28 @@ public class TableServiceImpl implements TableService{
     }
 
     @Override
-    public TableEntity RechercheParId(long id) {
+    public TableResponse RechercheParId(long id) {
         Optional<TableEntity> tableOpt = repotable.findById(id);
         TableEntity table;
         if (tableOpt.isPresent())
             table = tableOpt.get();
         else
             throw new NoSuchElementException("aucun table existe avec cette Id");
-        return table;
+        return mapper.map(table,TableResponse.class);
     }
 
     @Override
-    public TableEntity ajoutetable(TableEntity entity) {
-        return repotable.save(entity);
+    public TableResponse ajoutetable(TableRequest entityreq) {
+        TableEntity entity=   mapper.map(entityreq,TableEntity.class);
+        TableEntity table=repotable.save(entity);
+        return mapper.map(table,TableResponse.class);
     }
 
     @Override
-    public TableEntity modifyTable(long id, TableEntity modification) {
-        TableEntity oldtable= this.RechercheParId(id);
+    public TableResponse modifyTable(long id, TableRequest modificationreq) {
+        TableEntity modification = mapper.map(modificationreq,TableEntity.class);
+        TableResponse oldtableres= this.RechercheParId(id);
+        TableEntity oldtable=mapper.map(oldtableres,TableEntity.class);
         if(modification.getNumero()!=0){
             oldtable.setNumero(modification.getNumero());
         }
@@ -53,20 +62,27 @@ public class TableServiceImpl implements TableService{
         if(modification.getType() !=null){
             oldtable.setType(modification.getType());
         }
-        return repotable.save(oldtable);
+        TableEntity table=repotable.save(oldtable);
+        return mapper.map(table,TableResponse.class);
 
     }
 
     @Override
     public String deleteTableById(long id) {
-      TableEntity table=this.RechercheParId(id);
+        TableResponse table=this.RechercheParId(id);
       repotable.deleteById(id);
       return "table supprimer";
     }
 
     @Override
-    public TableEntity RechercheTableParNum(int num) {
-        return repotable.findByNumero(num)
-                .orElseThrow(()-> new NoSuchElementException("table avec cette numerp n'existe pas"));
+    public TableResponse RechercheTableParNum(int num) {
+
+        Optional<TableEntity> opt= repotable.findByNumero(num);
+        TableEntity table;
+        if (opt.isPresent())
+            table= opt.get();
+        else
+            throw new NoSuchElementException("\"table avec cette numerp n'existe pas\"");
+        return mapper.map(table,TableResponse.class);
     }
 }

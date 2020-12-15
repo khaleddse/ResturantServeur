@@ -1,5 +1,7 @@
 package com.DS.demo.endpoints;
 
+import com.DS.demo.DTO.TableRequest;
+import com.DS.demo.DTO.TableResponse;
 import com.DS.demo.models.TableEntity;
 import com.DS.demo.services.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +24,15 @@ private TableService service;
         return service.getAllTables();
     }
     @GetMapping("/{id}")
-    TableEntity RechercheParId(@PathVariable("id") long id) {
+    TableResponse RechercheParId(@PathVariable("id") long id) {
         return service.RechercheParId(id);
     }
     @PostMapping("/add")
-    TableEntity ajoutetable(@RequestBody TableEntity entity){
+    TableResponse ajoutetable(@RequestBody TableRequest entity){
     return service.ajoutetable(entity);
     }
 @PostMapping("/update/{id}")
-    TableEntity modifyTable(@PathVariable("id") long id, @RequestBody TableEntity modification){
+TableResponse modifyTable(@PathVariable("id") long id, @RequestBody TableRequest modification){
     return service.modifyTable(id,modification);
 }
 @DeleteMapping("/delete/{id}")
@@ -38,7 +40,7 @@ private TableService service;
     return service.deleteTableById(id);
 }
 @GetMapping("/recherche/{num}")
-TableEntity RechercheTableParNum(@PathVariable("num") int num){
+TableResponse RechercheTableParNum(@PathVariable("num") int num){
     return service.RechercheTableParNum(num);
 }
 }

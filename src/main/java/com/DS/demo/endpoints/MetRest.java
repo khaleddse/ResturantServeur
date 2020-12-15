@@ -1,7 +1,11 @@
 package com.DS.demo.endpoints;
 
+import com.DS.demo.DTO.*;
+import com.DS.demo.models.DessertEntity;
+import com.DS.demo.models.EntreeEntity;
 import com.DS.demo.models.MetEntity;
-import com.DS.demo.services.MetService;
+import com.DS.demo.models.PlatEntity;
+import com.DS.demo.services.MetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,26 +14,48 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/met")
 public class MetRest {
-   private MetService service;
+   private MetServiceImpl service;
 @Autowired
-    public MetRest(MetService service) {
+    public MetRest(MetServiceImpl service) {
         super();
         this.service = service;
     }
     @GetMapping
-    List<MetEntity> getAllEntities(){
+    List<MetResponse> getAllEntities(){
     return service.getAllEntities();
     }
+    @GetMapping("/plat")
+    List<PlatRespence> getAllPlat(){
+        return service.getAllPlat();
+    }
+    @GetMapping("/dessert")
+    List<DessetRespence> getAllDessert(){
+        return service.getAllDessert();
+    }
+    @GetMapping("/entree")
+    List<EntreeRespence> getAllEntree(){
+        return service.getAllEntree();
+    }
+
 @GetMapping("{id}")
-    MetEntity RechercheMetParId(@PathVariable("id")long id){
+    MetResponse RechercheMetParId(@PathVariable("id")long id){
         return service.RechercheMetParId(id);
     }
-@PostMapping("/add")
-    MetEntity createMet(@RequestBody MetEntity entity){
-    return service.createMet(entity);
+@PostMapping("/add/dessert")
+DessetRespence createDessert(@RequestBody DessertRequest entity) {
+    return service.createDessert(entity);
 }
+    @PostMapping("/add/plat")
+    PlatRespence createPlat(@RequestBody PlatRequest entity) {
+        return service.createPlat(entity);
+    }
+    @PostMapping("/add/entree")
+    EntreeRespence createEntree(@RequestBody EntreeRequest entity) {
+        return service.createEntree(entity);
+    }
+
 @PostMapping("/update/{id}")
-    MetEntity modifyMet(@PathVariable("id") long id, @RequestBody MetEntity newEntity){
+MetResponse modifyMet(@PathVariable("id") long id, @RequestBody MetRequest newEntity){
     return service.modifyMet(id,newEntity);
 }
 @DeleteMapping("/delete/{id}")
@@ -37,11 +63,8 @@ public class MetRest {
    return service.deleteMetById(id);
 }
 @GetMapping("/recherche/{nom}")
-    MetEntity RechercheParNom (@PathVariable("nom") String nom){
+MetResponse RechercheParNom (@PathVariable("nom") String nom){
     return service.RechercheParNom(nom);
 }
-    @GetMapping("/type/{type}")
-    MetEntity RechercheParType(@PathVariable("type") String type){
-    return service.RechercheParType(type);
-    }
+
 }

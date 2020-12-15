@@ -6,10 +6,8 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "Dessert")
+@DiscriminatorValue("Dessert")
 public class DessertEntity extends MetEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+
 
 }

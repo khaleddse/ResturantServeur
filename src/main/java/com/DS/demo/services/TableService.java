@@ -1,5 +1,7 @@
 package com.DS.demo.services;
 
+import com.DS.demo.DTO.TableRequest;
+import com.DS.demo.DTO.TableResponse;
 import com.DS.demo.models.TableEntity;
 
 
@@ -8,13 +10,13 @@ import java.util.List;
 public interface TableService {
     List<TableEntity> getAllTables();
 
-    TableEntity RechercheParId(long id);
+    TableResponse RechercheParId(long id);
 
-    TableEntity ajoutetable(TableEntity entity);
+    TableResponse ajoutetable(TableRequest entity);
 
-    TableEntity modifyTable(long id, TableEntity modification);
+    TableResponse modifyTable(long id, TableRequest modification);
 
    String deleteTableById(long id);
 
-   TableEntity RechercheTableParNum(int num);
+    TableResponse RechercheTableParNum(int num);
 }

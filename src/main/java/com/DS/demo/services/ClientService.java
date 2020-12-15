@@ -1,5 +1,7 @@
 package com.DS.demo.services;
 
+import com.DS.demo.DTO.ClientRequest;
+import com.DS.demo.DTO.ClientRespence;
 import com.DS.demo.models.ClientEntity;
 
 import java.util.List;
@@ -9,13 +11,13 @@ public interface ClientService {
 
         List<ClientEntity> getAllEntities();
 
-       ClientEntity getClientById(long id);
+    public ClientRespence getClientById(long id);
 
-        ClientEntity createClient(ClientEntity entity);
+    ClientRespence createClient(ClientRequest entity);
 
-        ClientEntity modifyClient(long id, ClientEntity newEntity);
+    ClientRespence modifyClient(long id, ClientRequest  newEntity);
 
         String deleteClientById(long id);
 
-        public ClientEntity RechercheParNom(String nom);
+        public ClientRespence RechercheParNom(String nom);
 }

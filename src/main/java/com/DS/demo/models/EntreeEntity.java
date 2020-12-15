@@ -5,11 +5,9 @@ import lombok.Data;
 import javax.persistence.*;
 @Data
 @Entity
-@Table(name = "Entree")
+@DiscriminatorValue("Entrée")
 public class EntreeEntity extends MetEntity {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private long id;
+
 
     }
