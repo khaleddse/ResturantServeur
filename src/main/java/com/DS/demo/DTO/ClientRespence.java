@@ -15,5 +15,5 @@ public class ClientRespence {
     private LocalDate dateDeNaissance;
     private String courriel;
     private String telephone;
-    private String tickets;
+   // private String tickets;
 }

@@ -1,8 +1,10 @@
 package com.DS.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,14 +17,19 @@ public class TicketEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true,nullable = false)
+
+    @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Integer numero;
-    private LocalDate date;
+    private Instant date;
     private Integer nbCouvert;
     private float addition;
     @ManyToOne
+
     private ClientEntity client;
     @ManyToOne
+
+
     private TableEntity table;
 
     @ManyToMany

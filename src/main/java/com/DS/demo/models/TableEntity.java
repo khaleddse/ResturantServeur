@@ -1,5 +1,6 @@
 package com.DS.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -22,7 +23,7 @@ public class TableEntity {
     private int nbCouvert;
     private String type;
     private double supplement;
-    @OneToMany(mappedBy = "table")
-
+    @OneToMany(mappedBy = "table",cascade = CascadeType.REMOVE)
+@JsonIgnore
     private List<TicketEntity> ticktes;
 }

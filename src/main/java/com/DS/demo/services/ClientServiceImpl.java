@@ -21,6 +21,7 @@ public class ClientServiceImpl implements ClientService {
     private ModelMapper mapper = new ModelMapper();
 
     @Autowired
+
     public ClientServiceImpl(ClientRepo repoclient) {
         super();
         this.repoclient = repoclient;
@@ -81,7 +82,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String deleteClientById(long id) {
-        ClientRespence client=this.getClientById(id);
+        //ClientRespence client=this.getClientById(id);
         repoclient.deleteById(id);
         return "client supprimer";
     }

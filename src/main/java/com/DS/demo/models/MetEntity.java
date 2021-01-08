@@ -1,5 +1,6 @@
 package com.DS.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 
@@ -23,6 +24,8 @@ public class MetEntity {
     private String nom;
     private double prix;
     @ManyToMany(mappedBy = "mets")
+
+    @JsonIgnore
     private List<TicketEntity> tickets;
 
 }

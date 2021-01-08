@@ -1,5 +1,7 @@
 package com.DS.demo.endpoints;
 
+import com.DS.demo.DTO.TicketRequest;
+import com.DS.demo.DTO.TicketResponse;
 import com.DS.demo.models.TicketEntity;
 import com.DS.demo.services.TicketService;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +22,15 @@ public class TicketRest {
         return service.getAllTicket();
     }
 @GetMapping("/recherche/{id}")
-    TicketEntity RechercheParId(@PathVariable("id") long id){
+TicketResponse RechercheParId(@PathVariable("id") long id){
       return   service.RechercheParId(id);
 }
 @PostMapping("/add")
-    TicketEntity createticket(@RequestBody TicketEntity entity){
+TicketResponse createticket(@RequestBody TicketRequest entity){
         return service.createticket(entity);
 }
 @PostMapping("/update/{id}")
-    TicketEntity modifyTicket(@PathVariable("id") long id, @RequestBody TicketEntity modification){
+TicketResponse modifyTicket(@PathVariable("id") long id, @RequestBody TicketRequest modification){
         return service.modifyTicket(id,modification);
 }
 @DeleteMapping("/delete/{id}")
