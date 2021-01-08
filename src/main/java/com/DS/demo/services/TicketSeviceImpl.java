@@ -4,8 +4,10 @@ package com.DS.demo.services;
 import com.DS.demo.DTO.TicketRequest;
 import com.DS.demo.DTO.TicketResponse;
 import com.DS.demo.models.ClientEntity;
+import com.DS.demo.models.MetEntity;
 import com.DS.demo.models.TicketEntity;
 import com.DS.demo.repositories.ClientRepo;
+import com.DS.demo.repositories.MetRepo;
 import com.DS.demo.repositories.TicketRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,20 @@ public class TicketSeviceImpl implements TicketService{
 
     TicketRepo repoticket;
     ClientRepo repoclient;
+    MetRepo repomet;
     private ModelMapper mapper = new ModelMapper();
+
     @Autowired
-    public TicketSeviceImpl(TicketRepo repoticket, ClientRepo repoclient) {
+    public TicketSeviceImpl(TicketRepo repoticket, ClientRepo repoclient, MetRepo repomet) {
+        super();
         this.repoticket = repoticket;
         this.repoclient = repoclient;
+        this.repomet = repomet;
     }
+
+
+
+
 
 
 
@@ -59,10 +69,24 @@ public class TicketSeviceImpl implements TicketService{
         Optional<ClientEntity>  opt=repoclient.findById(entityreq.getClient().getId());
         if (opt.isPresent()){
             entity.setClient(opt.get());
+        }else{
+            throw new NoSuchElementException("client id est incorrect ");
         }
 
-    TicketEntity tick=repoticket.save(entity);
 
+        List<MetEntity> mets=entity.getMets();
+        entity.setAddition(0);
+       for(MetEntity met:mets){
+           long metid= met.getId();
+           Optional<MetEntity> metopt=repomet.findById(metid);
+           if(metopt.isPresent()){
+               entity.setAddition(entity.getAddition()+metopt.get().getPrix());
+           }else {
+               throw new NoSuchElementException("met id est incorrect ");
+           }
+       }
+
+        TicketEntity tick=repoticket.save(entity);
     return mapper.map(tick,TicketResponse.class);
     }
 

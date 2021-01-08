@@ -22,7 +22,7 @@ public class MetEntity {
     private long id;
     @Column(nullable = false,unique = true)
     private String nom;
-    private double prix;
+    private float prix;
     @ManyToMany(mappedBy = "mets")
 
     @JsonIgnore
