@@ -1,5 +1,7 @@
 package com.DS.demo.endpoints;
 
+import com.DS.demo.DTO.MetResponse;
+import com.DS.demo.DTO.TableResponse;
 import com.DS.demo.DTO.TicketRequest;
 import com.DS.demo.DTO.TicketResponse;
 import com.DS.demo.models.ClientEntity;
@@ -56,6 +58,18 @@ public class TicketRest {
     @GetMapping("/client/{id}")
     public Instant JourPlusResrve(@PathVariable("id") long id){
         return service.JourPlusResrve(id);
+    };
+    @GetMapping("/tablereserve")
+    public TableResponse TablePlusReserver(){
+        return service.TablePlusReserver();
+    };
+    @GetMapping("/RevenuJSM")
+    public String RevenueDerniere(){
+        return service.RevenueDerniere();
+    };
+    @GetMapping("/MeillieurPlat/{begin}/{end}")
+    public MetResponse PlatPlusacheter(@PathVariable("begin")Instant begin, @PathVariable("end")Instant end){
+        return service.PlatPlusacheter(begin,end);
     };
 
 }

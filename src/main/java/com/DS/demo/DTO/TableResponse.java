@@ -17,5 +17,5 @@ public class TableResponse {
     private int nbCouvert;
     private String type;
     private double supplement;
-    private List<TicketEntity> ticktes;
+    //private List<TicketEntity> ticktes;
 }

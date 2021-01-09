@@ -1,19 +1,21 @@
 package com.DS.demo.services;
 
 
+import com.DS.demo.DTO.MetResponse;
+import com.DS.demo.DTO.TableResponse;
 import com.DS.demo.DTO.TicketRequest;
 import com.DS.demo.DTO.TicketResponse;
-import com.DS.demo.models.ClientEntity;
-import com.DS.demo.models.MetEntity;
-import com.DS.demo.models.TicketEntity;
+import com.DS.demo.models.*;
 import com.DS.demo.repositories.ClientRepo;
 import com.DS.demo.repositories.MetRepo;
+import com.DS.demo.repositories.TableRepo;
 import com.DS.demo.repositories.TicketRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,30 +25,21 @@ public class TicketSeviceImpl implements TicketService{
     TicketRepo repoticket;
     ClientRepo repoclient;
     MetRepo repomet;
+    TableRepo repotable;
 
     private ModelMapper mapper = new ModelMapper();
-
     @Autowired
-    public TicketSeviceImpl(TicketRepo repoticket, ClientRepo repoclient, MetRepo repomet) {
-        super();
+    public TicketSeviceImpl(TicketRepo repoticket, ClientRepo repoclient, MetRepo repomet, TableRepo repotable) {
         this.repoticket = repoticket;
         this.repoclient = repoclient;
         this.repomet = repomet;
-
+        this.repotable = repotable;
     }
-
-
-
-
-
-
 
 
 
     @Override
     public List<TicketEntity> getAllTicket() {
-
-
 
         return repoticket.findAll();
 
@@ -154,6 +147,61 @@ ticketss.add(ticket);
                  .entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
       }else throw new NoSuchElementException("client id est incorrect ");
         return dateplusrepter;
+    }
+    @Override
+    public TableResponse TablePlusReserver(){
+        Map<Long,Integer> listTableWithkey=new HashMap<>();
+        List<TableEntity> tables=repotable.findAll();
+        for(TableEntity table:tables){
+            listTableWithkey.put(table.getId(),table.getTicktes().size());
+        }
+        Long toptable= listTableWithkey.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+
+        TableEntity table=repotable.findById(toptable).get();
+        return mapper.map(table,TableResponse.class);
+    }
+
+
+    @Override
+    public String RevenueDerniere(){
+        List<TicketEntity> tickets=repoticket.findAll();
+        double revenueJours=0,revenueSemaine=0,revenuemois=0;
+        for (TicketEntity ticket:tickets){
+            if (ticket.getDate().isAfter(Instant.now().minus(Period.ofDays(30)))){
+                revenuemois=revenuemois+ticket.getAddition();
+            }
+            if (ticket.getDate().isAfter(Instant.now().minus(Period.ofDays(7)))){
+                revenueSemaine=revenueSemaine+ticket.getAddition();
+            }
+            if (ticket.getDate().isAfter(Instant.now().minus(Period.ofDays(1)))){
+                revenueJours=revenueJours+ticket.getAddition();
+            }
+        }
+
+        return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+revenueSemaine+"\n Revenue jour derniere :"+revenueJours;
+    }
+    @Override
+    public MetResponse PlatPlusacheter(Instant begin, Instant end){
+        List<TicketEntity> tickets=repoticket.findAll();
+        List<Long> idList=new ArrayList<>();
+        for (TicketEntity ticket:tickets){
+            //check if ticket is in the given time interval
+            if(ticket.getDate().isAfter(begin)&&ticket.getDate().isBefore(end)){
+
+                for (MetEntity met:ticket.getMets()){
+                    //filtering Plat out from list of mets
+                    if(met instanceof PlatEntity){
+                        idList.add(met.getId());
+                    }
+                }
+            }
+        }
+        Long metid= idList.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        MetEntity met=repomet.findById(metid).get();
+        return mapper.map(met,MetResponse.class);
     }
 
 }

@@ -24,6 +24,6 @@ public class TableEntity {
     private String type;
     private double supplement;
     @OneToMany(mappedBy = "table",cascade = CascadeType.REMOVE)
-@JsonIgnore
+    @JsonIgnore
     private List<TicketEntity> ticktes;
 }

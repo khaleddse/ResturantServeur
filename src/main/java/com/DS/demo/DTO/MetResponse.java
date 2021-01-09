@@ -13,5 +13,5 @@ public class MetResponse {
     private long id;
     private String nom;
     private double prix;
-    private List<TicketEntity> tickets;
+   // private List<TicketEntity> tickets;
 }
