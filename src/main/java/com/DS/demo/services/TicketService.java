@@ -5,6 +5,7 @@ import com.DS.demo.DTO.TicketResponse;
 import com.DS.demo.models.ClientEntity;
 import com.DS.demo.models.TicketEntity;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface TicketService {
@@ -18,5 +19,7 @@ public interface TicketService {
 
     String deleteTicketById(long id);
 
-
+    public ClientEntity  ClientplusFidel(Instant debutperiode, Instant finperiode);
+    public float revenudansperiode(Instant debutperiode, Instant finperiode);
+    public Instant JourPlusResrve(long id);
 }

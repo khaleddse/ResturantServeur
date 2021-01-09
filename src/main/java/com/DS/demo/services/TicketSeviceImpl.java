@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class TicketSeviceImpl implements TicketService{
 
     TicketRepo repoticket;
     ClientRepo repoclient;
     MetRepo repomet;
+
     private ModelMapper mapper = new ModelMapper();
 
     @Autowired
@@ -32,6 +32,7 @@ public class TicketSeviceImpl implements TicketService{
         this.repoticket = repoticket;
         this.repoclient = repoclient;
         this.repomet = repomet;
+
     }
 
 
@@ -115,4 +116,44 @@ public class TicketSeviceImpl implements TicketService{
         repoticket.deleteById(id);
          return "ticket Supprimer";
     }
+    @Override
+    public ClientEntity ClientplusFidel(Instant debutperiode,Instant finperiode){
+       List<TicketEntity>tickets=repoticket.findAll();
+       List<TicketEntity>ticketss=new ArrayList<>();
+
+      for(TicketEntity ticket:tickets){
+          if(ticket.getDate().isAfter(debutperiode)&&ticket.getDate().isBefore(finperiode)){
+ticketss.add(ticket);
+          }
+      }
+     List<ClientEntity>cl=  ticketss.stream().map(tic->tic.getClient()).collect(Collectors.toList());
+
+      ClientEntity fidel=cl.stream().collect(Collectors.groupingBy(l->l, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+      return fidel;
+    }
+
+    @Override
+    public float revenudansperiode(Instant debutperiode, Instant finperiode) {
+        List<TicketEntity> tickets=repoticket.findAll();
+        float somme=0;
+        for(TicketEntity ticket:tickets){
+            if(ticket.getDate().isAfter(debutperiode)&&ticket.getDate().isBefore(finperiode)){
+                somme=ticket.getAddition()+somme;
+            }
+        }
+        return somme;
+    }
+
+    @Override
+    public Instant JourPlusResrve(long id) {
+      Optional  <ClientEntity> client=repoclient.findById(id);
+        Instant dateplusrepter=Instant.now();
+      if(client.isPresent()){
+          dateplusrepter= client.get().getTickets().stream().map(ticket->ticket.getDate())
+                 .collect(Collectors.groupingBy(I->I, Collectors.counting()))
+                 .entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+      }else throw new NoSuchElementException("client id est incorrect ");
+        return dateplusrepter;
+    }
+
 }
