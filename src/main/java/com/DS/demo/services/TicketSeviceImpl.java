@@ -1,10 +1,7 @@
 package com.DS.demo.services;
 
 
-import com.DS.demo.DTO.MetResponse;
-import com.DS.demo.DTO.TableResponse;
-import com.DS.demo.DTO.TicketRequest;
-import com.DS.demo.DTO.TicketResponse;
+import com.DS.demo.DTO.*;
 import com.DS.demo.models.*;
 import com.DS.demo.repositories.ClientRepo;
 import com.DS.demo.repositories.MetRepo;
@@ -15,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -88,9 +87,7 @@ public class TicketSeviceImpl implements TicketService{
     public TicketResponse modifyTicket(long id, TicketRequest modificationReq) {
         TicketEntity modification=mapper.map(modificationReq,TicketEntity.class);
         TicketResponse oldticket=this.RechercheParId(id);
-    if(modification.getNumero()!=null){
-        oldticket.setNumero(modification.getNumero());
-    }
+
     if(modification.getAddition()!=0){
         oldticket.setAddition(modification.getAddition());
     }
@@ -109,57 +106,66 @@ public class TicketSeviceImpl implements TicketService{
         repoticket.deleteById(id);
          return "ticket Supprimer";
     }
-    @Override
-    public ClientEntity ClientplusFidel(Instant debutperiode,Instant finperiode){
-       List<TicketEntity>tickets=repoticket.findAll();
-       List<TicketEntity>ticketss=new ArrayList<>();
-
-      for(TicketEntity ticket:tickets){
-          if(ticket.getDate().isAfter(debutperiode)&&ticket.getDate().isBefore(finperiode)){
-ticketss.add(ticket);
-          }
-      }
-     List<ClientEntity>cl=  ticketss.stream().map(tic->tic.getClient()).collect(Collectors.toList());
-
-      ClientEntity fidel=cl.stream().collect(Collectors.groupingBy(l->l, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-      return fidel;
-    }
 
     @Override
-    public float revenudansperiode(Instant debutperiode, Instant finperiode) {
+    public MetResponse PlatPlusacheter(LocalDate begin, LocalDate  end){
         List<TicketEntity> tickets=repoticket.findAll();
-        float somme=0;
-        for(TicketEntity ticket:tickets){
-            if(ticket.getDate().isAfter(debutperiode)&&ticket.getDate().isBefore(finperiode)){
-                somme=ticket.getAddition()+somme;
+        List<Long> idList=new ArrayList<>();
+        for (TicketEntity ticket:tickets){
+
+            if(ticket.getDate().isAfter(begin.atStartOfDay(ZoneId.systemDefault()).toInstant())&&ticket.getDate().isBefore(end.atStartOfDay(ZoneId.systemDefault()).toInstant())){
+
+                for (MetEntity met:ticket.getMets()){
+
+                    if(met instanceof PlatEntity){
+                        idList.add(met.getId());
+                    }
+                }
             }
         }
-        return somme;
+        Long metid= idList.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        MetEntity met=repomet.findById(metid).get();
+        return mapper.map(met,MetResponse.class);
+    }
+
+
+
+    @Override
+    public ClientRespence ClientplusFidel(){
+        List<TicketEntity>tickets=repoticket.findAll();
+
+        List<ClientEntity>cl=  tickets.stream().map(tic->tic.getClient()).collect(Collectors.toList());
+
+        ClientEntity fidel=cl.stream().collect(Collectors.groupingBy(l->l, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        return mapper.map(fidel,ClientRespence.class);
     }
 
     @Override
-    public Instant JourPlusResrve(long id) {
+    public TableResponse TablePlusReserver(){
+        List<TicketEntity>tickets=repoticket.findAll();
+        List<TableEntity>cl=  tickets.stream().map(tic->tic.getTable()).collect(Collectors.toList());
+        TableEntity fidel=cl.stream().collect(Collectors.groupingBy(l->l, Collectors.counting())).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        return mapper.map(fidel,TableResponse.class);
+
+    }
+
+
+
+    @Override
+    public LocalDate JourPlusResrve(long id) {
       Optional  <ClientEntity> client=repoclient.findById(id);
-        Instant dateplusrepter=Instant.now();
+        LocalDate dateplusrepter=LocalDate.now();
       if(client.isPresent()){
-          dateplusrepter= client.get().getTickets().stream().map(ticket->ticket.getDate())
+          dateplusrepter= client.get().getTickets().stream().map(ticket->ticket.getDate().atZone(ZoneId.systemDefault()).toLocalDate())
                  .collect(Collectors.groupingBy(I->I, Collectors.counting()))
                  .entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
       }else throw new NoSuchElementException("client id est incorrect ");
         return dateplusrepter;
     }
-    @Override
-    public TableResponse TablePlusReserver(){
-        Map<Long,Integer> listTableWithkey=new HashMap<>();
-        List<TableEntity> tables=repotable.findAll();
-        for(TableEntity table:tables){
-            listTableWithkey.put(table.getId(),table.getTicktes().size());
-        }
-        Long toptable= listTableWithkey.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
 
-        TableEntity table=repotable.findById(toptable).get();
-        return mapper.map(table,TableResponse.class);
-    }
 
 
     @Override
@@ -180,28 +186,19 @@ ticketss.add(ticket);
 
         return "Revenue moins derniere :"+revenuemois+"\n Revenue semaine derniere :"+revenueSemaine+"\n Revenue jour derniere :"+revenueJours;
     }
-    @Override
-    public MetResponse PlatPlusacheter(Instant begin, Instant end){
-        List<TicketEntity> tickets=repoticket.findAll();
-        List<Long> idList=new ArrayList<>();
-        for (TicketEntity ticket:tickets){
-            //check if ticket is in the given time interval
-            if(ticket.getDate().isAfter(begin)&&ticket.getDate().isBefore(end)){
 
-                for (MetEntity met:ticket.getMets()){
-                    //filtering Plat out from list of mets
-                    if(met instanceof PlatEntity){
-                        idList.add(met.getId());
-                    }
-                }
+    @Override
+    public float revenudansperiode(LocalDate debutperiode, LocalDate finperiode) {
+        List<TicketEntity> tickets=repoticket.findAll();
+        float somme=0;
+        for(TicketEntity ticket:tickets){
+            if(ticket.getDate().isAfter(debutperiode.atStartOfDay(ZoneId.systemDefault()).toInstant())&&ticket.getDate().isBefore(finperiode.atStartOfDay(ZoneId.systemDefault()).toInstant())){
+                somme=ticket.getAddition()+somme;
             }
         }
-        Long metid= idList.stream().collect(Collectors.groupingBy(s -> s, Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
-        MetEntity met=repomet.findById(metid).get();
-        return mapper.map(met,MetResponse.class);
+        return somme;
     }
+
+
 
 }

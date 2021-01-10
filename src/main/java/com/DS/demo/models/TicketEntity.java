@@ -15,12 +15,7 @@ import java.util.List;
 public class TicketEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-
-    @GeneratedValue(strategy = GenerationType.AUTO)
-
-    private Integer numero;
+    private long numero;
     private Instant date;
     private Integer nbCouvert;
     private float addition;

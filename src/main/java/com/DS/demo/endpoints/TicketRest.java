@@ -1,15 +1,13 @@
 package com.DS.demo.endpoints;
 
-import com.DS.demo.DTO.MetResponse;
-import com.DS.demo.DTO.TableResponse;
-import com.DS.demo.DTO.TicketRequest;
-import com.DS.demo.DTO.TicketResponse;
+import com.DS.demo.DTO.*;
 import com.DS.demo.models.ClientEntity;
 import com.DS.demo.models.TicketEntity;
 import com.DS.demo.services.TicketService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,29 +45,54 @@ public class TicketRest {
         return service.deleteTicketById(id);
     }
 
-    @GetMapping("/fidel/{begin}/{end}")
-    public ClientEntity ClientplusFidel(@PathVariable("begin") Instant debutperiode, @PathVariable("end") Instant finperiode) {
-        return service.ClientplusFidel(debutperiode, finperiode);
-    }
-    @GetMapping("/revenu/{begin}/{end}")
-    public float revenudansperiode(@PathVariable("begin")Instant debutperiode,@PathVariable("end") Instant finperiode){
-        return service.revenudansperiode(debutperiode,finperiode);
-    }
-    @GetMapping("/client/{id}")
-    public Instant JourPlusResrve(@PathVariable("id") long id){
-        return service.JourPlusResrve(id);
+
+
+    //a) Pour une période donnée quel est le plat le plus acheté ?
+
+    @GetMapping("/MeillieurPlat/{begin}/{end}")
+    public MetResponse PlatPlusacheter(@PathVariable("begin")String begin, @PathVariable("end")String end){
+        LocalDate datebegin=LocalDate.parse(begin);
+        LocalDate datefin=LocalDate.parse(end);
+        return service.PlatPlusacheter(datebegin,datefin);
     };
+
+    //b) Quel est le client le plus fidèle au restaurant ?
+
+    @GetMapping("/fidel")
+    public ClientRespence ClientplusFidel() {
+        return service.ClientplusFidel();
+    }
+    //c) Quelle est la table la plus réservée ?
+
     @GetMapping("/tablereserve")
     public TableResponse TablePlusReserver(){
         return service.TablePlusReserver();
     };
+
+    // d) Quel est le jour de la semaine le plus réservé par un client donné ?
+
+    @GetMapping("/client/{id}")
+    public LocalDate JourPlusResrve(@PathVariable("id") long id){
+        return service.JourPlusResrve(id);
+    };
+
+
+
+
+    //e) Retourner le revenu par jour, semaine et mois.
+
     @GetMapping("/RevenuJSM")
     public String RevenueDerniere(){
         return service.RevenueDerniere();
     };
-    @GetMapping("/MeillieurPlat/{begin}/{end}")
-    public MetResponse PlatPlusacheter(@PathVariable("begin")Instant begin, @PathVariable("end")Instant end){
-        return service.PlatPlusacheter(begin,end);
-    };
+
+    //f) Retourner le revenu pour une période donnée.
+
+    @GetMapping("/revenu/{begin}/{end}")
+    public float revenudansperiode(@PathVariable("begin")String debutperiode,@PathVariable("end") String finperiode){
+        LocalDate datebegin=LocalDate.parse(debutperiode);
+        LocalDate datefin=LocalDate.parse(finperiode);
+        return service.revenudansperiode(datebegin,datefin);
+    }
 
 }

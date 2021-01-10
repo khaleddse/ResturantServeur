@@ -1,13 +1,11 @@
 package com.DS.demo.services;
 
-import com.DS.demo.DTO.MetResponse;
-import com.DS.demo.DTO.TableResponse;
-import com.DS.demo.DTO.TicketRequest;
-import com.DS.demo.DTO.TicketResponse;
+import com.DS.demo.DTO.*;
 import com.DS.demo.models.ClientEntity;
 import com.DS.demo.models.TicketEntity;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TicketService {
@@ -21,15 +19,15 @@ public interface TicketService {
 
     String deleteTicketById(long id);
 
-    public ClientEntity  ClientplusFidel(Instant debutperiode, Instant finperiode);
+    public ClientRespence ClientplusFidel();
 
-    public float revenudansperiode(Instant debutperiode, Instant finperiode);
+    public float revenudansperiode(LocalDate debutperiode, LocalDate finperiode);
 
-    public Instant JourPlusResrve(long id);
+    public LocalDate JourPlusResrve(long id);
 
     public TableResponse TablePlusReserver();
 
     public String RevenueDerniere();
 
-    public MetResponse PlatPlusacheter(Instant begin, Instant end);
+    public MetResponse PlatPlusacheter(LocalDate  begin, LocalDate  end);
 }
